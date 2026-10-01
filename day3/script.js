@@ -8,7 +8,7 @@ let notes = [
   { id: 6, text: "Review pull requests", category: "work" }
 ];
 
-// --- 1. searchNotes(word) ---
+//  searchNotes(word) 
 // Returns an array of notes whose text contains the word, ignoring upper/lower case.
 function searchNotes(word) {
     return notes.filter(note => 
@@ -16,7 +16,7 @@ function searchNotes(word) {
     );
 }
 
-// --- 2. longestNote() ---
+// longestNote()
 // Returns the note object with the most characters, or null if there are no notes.
 function longestNote() {
     if (notes.length === 0) {
@@ -32,7 +32,7 @@ function longestNote() {
     return longest;
 }
 
-// --- 3. countByCategory() ---
+// countByCategory()
 // Returns an object counting notes per category.
 function countByCategory() {
     const counts = {};
@@ -46,7 +46,7 @@ function countByCategory() {
     return counts;
 }
 
-// --- 4. getSummary() ---
+// getSummary() 
 // Returns a sentence like "6 notes: 3 personal, 2 work, 1 study."
 function getSummary() {
     const counts = countByCategory();
@@ -63,29 +63,29 @@ function getSummary() {
     return `${total} ${noteWord}: ${summaryParts.join(", ")}.`;
 }
 
-// --- 5. isDuplicate(text) ---
+// isDuplicate(text)
 // Returns true if a note with the same text already exists (ignoring case and extra spaces).
 function isDuplicate(text) {
     const cleanText = text.trim().toLowerCase();
     return notes.some(note => note.text.trim().toLowerCase() === cleanText);
 }
 
-// --- 6. addNote(text, category) ---
+// addNote(text, category)
 // Adds a note if valid (1-200 chars, not duplicate, valid category). Returns true/false.
 function addNote(text, category) {
-    // 1. Check length
+    //  Check length
     if (text.length < 1 || text.length > 200) {
         console.log("Failed to add: Text must be between 1 and 200 characters.");
         return false;
     }
     
-    // 2. Check for duplicates
+    // Check for duplicates
     if (isDuplicate(text)) {
         console.log("Failed to add: This note already exists (duplicate).");
         return false;
     }
     
-    // 3. Check valid category
+    // Check valid category
     const validCategories = ["personal", "work", "study"];
     if (!validCategories.includes(category.toLowerCase())) {
         console.log("Failed to add: Category must be 'personal', 'work', or 'study'.");
@@ -104,9 +104,7 @@ function addNote(text, category) {
 }
 
 
-// ==========================================
-// --- TESTING SECTIONS (Requirement #8) ---
-// ==========================================
+//TESTING SECTIONS 
 
 console.log("--- Testing searchNotes ---");
 // Normal case:
