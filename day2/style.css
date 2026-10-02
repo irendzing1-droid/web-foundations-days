@@ -22,27 +22,31 @@ header {
 
 /* 3. Navigation bar with Flexbox */
 nav {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
     margin-top: 10px;
 }
 
+/* We now apply Flexbox to the ul instead of the nav */
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    list-style: none; /* This removes the bullet points! */
+    padding: 0;       /* Removes default browser indentation */
+    margin: 0;
+}
+
+/* Keep your existing link styling */
 nav a {
     color: #ffffff;
     text-decoration: none;
     padding: 5px 10px;
-    transition: all 0.3s ease; /* Smooth transition for hover */
+    transition: all 0.3s ease; 
 }
-
-/* 7. Hover effects for navigation */
 nav a:hover {
     background-color: #34495e;
     border-radius: 4px;
     text-decoration: underline;
 }
-
-/* 4. Centre <main> with max-width */
 main {
     max-width: 800px;
     margin: 2rem auto;
