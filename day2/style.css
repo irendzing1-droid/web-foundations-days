@@ -150,6 +150,8 @@ footer {
 
 /* 8. Media query for small screens (600px or less) */
 @media (max-width: 600px) {
+     header {
+        padding: 0.5rem;}
     header h1 {
         font-size: 1.5rem; /* Reduce header font size */
     }

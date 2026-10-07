@@ -155,3 +155,20 @@ console.log("Adding with bad category:", addNote("Buy groceries", "shopping"));
 // Edge case (Too long):
 console.log("Adding too long note:", addNote("A".repeat(201), "work")); 
 // Expected: false
+
+console.log("\n--- Testing Edge Cases (Instructor Next Step) ---");
+
+// 1. Test longestNote with an EMPTY array
+const originalNotes = [...notes]; // Save your original 6 notes
+notes = []; // Temporarily empty the array
+console.log("Longest note (empty array):", longestNote()); 
+// Expected output: null
+
+// 2. Test getSummary with a SINGLE note
+notes = [{ id: 99, text: "Just one note", category: "work" }]; // Temporarily set to 1 note
+console.log("Summary (single note):", getSummary()); 
+// Expected output: "1 note: 1 work." (Notice it says "note", not "notes")
+
+// Restore your original data so the rest of your script doesn't break
+notes = originalNotes;
+console.log("Original notes array restored.");
