@@ -20,15 +20,14 @@ CREATE TABLE courses (
     title TEXT NOT NULL
 );
 
--- 3. Create Enrollments Table (Join table)
+-- 3. Create Enrollments Table (Junction Table with Composite Primary Key)
 CREATE TABLE enrollments (
-    id INTEGER PRIMARY KEY,
     student_id INTEGER NOT NULL,
     course_id INTEGER NOT NULL,
     grade TEXT,
+    PRIMARY KEY (student_id, course_id), -- Composite primary key prevents duplicates
     FOREIGN KEY (student_id) REFERENCES students(id),
-    FOREIGN KEY (course_id) REFERENCES courses(id),
-    UNIQUE (student_id, course_id) -- Prevents a student enrolling in the same course twice
+    FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
 -- ==========================================
@@ -44,12 +43,13 @@ INSERT INTO courses (id, title) VALUES
 (2, 'Database Design'),
 (3, 'Python Programming');
 
-INSERT INTO enrollments (id, student_id, course_id, grade) VALUES
-(1, 1, 1, 'A'),
-(2, 1, 2, 'B'),
-(3, 2, 1, 'C'),
-(4, 2, 3, 'A'),
-(5, 3, 2, 'B');
+-- Note: We no longer provide an id for enrollments; the student_id + course_id is enough
+INSERT INTO enrollments (student_id, course_id, grade) VALUES
+(1, 1, 'A'),
+(1, 2, 'B'),
+(2, 1, 'C'),
+(2, 3, 'A'),
+(3, 2, 'B');
 
 -- ==========================================
 -- FIVE REQUIRED QUERIES
@@ -79,9 +79,10 @@ GROUP BY courses.id, courses.title;
 SELECT students.name
 FROM students
 LEFT JOIN enrollments ON students.id = enrollments.student_id
-WHERE enrollments.id IS NULL;
+WHERE enrollments.course_id IS NULL; -- Updated to check the composite key
 
 -- Query 5: Update one enrollment's grade
+-- Because the primary key is now composite, we identify the row by student AND course
 UPDATE enrollments 
 SET grade = 'A+' 
-WHERE id = 2; -- Updating John Doe's grade for Database Design
+WHERE student_id = 1 AND course_id = 2;

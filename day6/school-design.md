@@ -10,9 +10,9 @@ Stores information about each student. The `id` is the primary key, `name` is re
 
 Stores the catalog of available courses. The `id` is the primary key and `title` is required. This is an independent table.
 
-### `enrollments` Table
+### `enrollments` Table (Junction Table)
 
-This is a **junction table** (join table) that links students to courses. It has a primary key `id`, plus `student_id` and `course_id` which are both foreign keys pointing back to the other two tables. It also stores the `grade` a student received. A `UNIQUE` constraint on `(student_id, course_id)` prevents the same student from enrolling in the same course twice.
+This is a **junction table** that links students to courses. Instead of a surrogate primary key `id`, this table uses a **composite primary key** made of `student_id` and `course_id` together. This guarantees that a single student cannot enroll in the same course twice, since that combination would violate the primary key constraint. It also stores the `grade` a student received.
 
 ## Relationships
 
@@ -26,4 +26,4 @@ I would add an index on the `enrollments.student_id` column. Since Query 1 ("All
 
 ## SQL vs. NoSQL Recommendation
 
-For this specific school system, I would choose a **SQL database**. The data is highly structured with clear relationships (students, courses, enrollments) and the use of constraints (like UNIQUE emails, foreign keys, and preventing duplicate enrollments) is essential for data integrity. NoSQL databases are better for unstructured or rapidly-changing data schemas, but a school system benefits from the reliability and query power of SQL.
+For this specific school system, I would choose a **SQL database**. The data is highly structured with clear relationships (students, courses, enrollments) and the use of constraints (like UNIQUE emails, foreign keys, and composite primary keys) is essential for data integrity. NoSQL databases are better for unstructured or rapidly-changing data schemas, but a school system benefits from the reliability and query power of SQL.
