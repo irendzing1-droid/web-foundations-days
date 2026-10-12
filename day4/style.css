@@ -25,7 +25,7 @@ body.dark {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: background-color 0.3s, color 0.3s;
+  
 }
 
 body {
@@ -36,6 +36,7 @@ body {
     justify-content: center;
     padding-top: 50px;
     min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -45,6 +46,7 @@ body {
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -52,6 +54,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    
 }
 
 label {
@@ -71,7 +74,8 @@ textarea {
     border: 2px solid var(--border-color);
     border-radius: 8px;
     resize: vertical;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem;  transition: background-color 0.3s, color 0.3s;
+
 }
 
 textarea:focus {
@@ -107,6 +111,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+      transition: background-color 0.3s, color 0.3s;
 }
 
 button:hover {
