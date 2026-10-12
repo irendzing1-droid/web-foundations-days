@@ -22,7 +22,7 @@ This is a **junction table** that links students to courses. Instead of a surrog
 
 ## Index Recommendation
 
-I would add an index on the `enrollments.student_id` column. Since Query 1 ("All courses for one student") filters by student, this index would speed up lookups. The `enrollments` table is likely to grow quickly, so a `student_id` index ensures we don't have to scan the whole table to find one student's courses.
+I would add an index on the `enrollments.course_id` column. Because the composite primary key is `(student_id, course_id)`, SQLite automatically creates an internal index that can be used for queries filtering by `student_id` (the leftmost column). However, queries that filter by `course_id` alone (like Query 2 "All students on one course") will not benefit from that internal index. Adding an explicit index on `course_id` will speed up those lookups as the `enrollments` table grows.
 
 ## SQL vs. NoSQL Recommendation
 
