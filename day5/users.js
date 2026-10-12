@@ -40,9 +40,15 @@ function renderUsers(list) {
         const companyEl = document.createElement('span');
         companyEl.textContent = ` | ${user.company.name}`;
 
+        // --- NEW: Create a span for the city ---
+        const cityEl = document.createElement('span');
+        // Use optional chaining (?.) in case some users don't have an address
+        cityEl.textContent = ` | ${user.address?.city || 'N/A'}`;
+
         li.appendChild(nameEl);
         li.appendChild(emailEl);
         li.appendChild(companyEl);
+        li.appendChild(cityEl); // <-- Don't forget this!
         
         usersList.appendChild(li);
     });
@@ -68,10 +74,13 @@ async function loadUsers() {
 
         // Parse the JSON data
         const data = await response.json();
- const myUser = {
+
+        // --- Custom User Object with address ---
+        const myUser = {
             name: "Irene Dzingai",
             email: "irene.dzingai@gmail.com",
-            company: { name: "A Royal Priesthood" }
+            company: { name: "A Royal Priesthood" },
+            address: { city: "Harare" } // <-- Added Harare
         };
 
         // Add your user to the front of the array using unshift()
