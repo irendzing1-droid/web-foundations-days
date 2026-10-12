@@ -79,21 +79,23 @@ GROUP BY courses.id, courses.title;
 SELECT students.name
 FROM students
 LEFT JOIN enrollments ON students.id = enrollments.student_id
-WHERE enrollments.course_id IS NULL; -- Updated to check the composite key
+WHERE enrollments.course_id IS NULL;
 
 -- Query 5: Update one enrollment's grade
--- Because the primary key is now composite, we identify the row by student AND course
 UPDATE enrollments 
 SET grade = 'A+' 
 WHERE student_id = 1 AND course_id = 2;
 
--- Query to generate a transcript: Student Name, Course Title, and Letter Grade
+-- ==========================================
+-- TRANSCRIPT QUERY (Next Step Assignment)
+-- Joins all three tables to show student name, course title, and letter grade
 -- Ordered alphabetically by student name
+-- ==========================================
 SELECT 
-    students.student_name,
-    courses.course_title,
-    enrollments.letter_grade
+    students.name AS student_name,
+    courses.title AS course_title,
+    enrollments.grade AS letter_grade
 FROM students
-JOIN enrollments ON students.student_id = enrollments.student_id
-JOIN courses ON enrollments.course_id = courses.course_id
-ORDER BY students.student_name ASC;
+JOIN enrollments ON students.id = enrollments.student_id
+JOIN courses ON courses.id = enrollments.course_id
+ORDER BY students.name ASC;
