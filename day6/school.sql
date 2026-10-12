@@ -86,3 +86,14 @@ WHERE enrollments.course_id IS NULL; -- Updated to check the composite key
 UPDATE enrollments 
 SET grade = 'A+' 
 WHERE student_id = 1 AND course_id = 2;
+
+-- Query to generate a transcript: Student Name, Course Title, and Letter Grade
+-- Ordered alphabetically by student name
+SELECT 
+    students.student_name,
+    courses.course_title,
+    enrollments.letter_grade
+FROM students
+JOIN enrollments ON students.student_id = enrollments.student_id
+JOIN courses ON enrollments.course_id = courses.course_id
+ORDER BY students.student_name ASC;
