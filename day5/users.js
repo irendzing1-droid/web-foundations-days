@@ -40,7 +40,7 @@ function renderUsers(list) {
         const companyEl = document.createElement('span');
         companyEl.textContent = ` | ${user.company.name}`;
 
-        // --- NEW: Create a span for the city ---
+        // Create a span for the city
         const cityEl = document.createElement('span');
         // Use optional chaining (?.) in case some users don't have an address
         cityEl.textContent = ` | ${user.address?.city || 'N/A'}`;
@@ -48,7 +48,7 @@ function renderUsers(list) {
         li.appendChild(nameEl);
         li.appendChild(emailEl);
         li.appendChild(companyEl);
-        li.appendChild(cityEl); // <-- Don't forget this!
+        li.appendChild(cityEl);
         
         usersList.appendChild(li);
     });
@@ -80,11 +80,10 @@ async function loadUsers() {
             name: "Irene Dzingai",
             email: "irene.dzingai@gmail.com",
             company: { name: "A Royal Priesthood" },
-            address: { city: "Harare" } // <-- Added Harare
+            address: { city: "Harare" } 
         };
 
         // Add your user to the front of the array using unshift()
-        // unshift adds to the beginning; push adds to the end
         data.unshift(myUser);
 
         // Store it in our state variable
@@ -112,9 +111,15 @@ async function loadUsers() {
 // Load Users button click
 loadUsersBtn.addEventListener('click', loadUsers);
 
-// Filter input (Assignment Step 4: listen for the input event, filter, and re-render)
+// Filter input
 filterInput.addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase().trim();
+
+    // --- NEW: Check if users are loaded before filtering ---
+    if (allUsers.length === 0) {
+        statusMsg.textContent = 'Please load the user directory first before searching.';
+        return; // Stop the function here
+    }
 
     // Filter the master list based on the search term
     const filtered = allUsers.filter(user => 
