@@ -119,7 +119,7 @@ To handle 57 uploads/second without degrading the user experience, the upload pr
 4. **Save Metadata:** The App Server writes the image metadata (User ID, URL, timestamp) to the Primary Database with a status of "processing".
 5. **Queue the Job:** The App Server pushes a message to the Message Queue (Kafka) containing the image ID and storage URL.
 6. **Immediate Response:** The App Server instantly returns a 202 Accepted response to the client. The user sees a success message immediately, rather than waiting for the image to process.
-7. **Background Processing:** A Worker Node picks up the message from the queue. It downloads the original image from S3, resizes it, generates a thumbnail, and uploads the thumbnail back to S3.
+7. **Background Processing:** A Worker Node picks up the message from the queue. It downloads the original image from S3, resizes it, generates a thumbnail, and uploads the thumbnail back to S3. It then updates the database status to "active" and notifies the client (via WebSocket or push notification) that the image is ready.
 8. **Update Status:** The Worker Node updates the database record status to "completed" and stores the new thumbnail URL.
 
 ---
