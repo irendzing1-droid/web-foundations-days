@@ -84,3 +84,50 @@ Photos should **never** be stored directly inside the database (as BLOBs). Datab
           v
 [ Object Storage (S3) ] <--- Stores original photos and thumbnails
 ```
+
+## 6. Component Explanations
+
+1. **Client (Mobile/Web):** The user interface where photos are uploaded and viewed. Interacts with the system via HTTP/REST APIs.
+
+2. **CDN (Content Delivery Network):** Caches and serves static assets (images and thumbnails) from edge locations close to the user, drastically reducing latency and load on our main servers.
+
+3. **Load Balancer:** Distributes incoming API traffic evenly across multiple app servers to prevent any single server from being overwhelmed.
+
+4. **App Servers (x3):** Stateless servers that handle business logic, user authentication, and API requests. Because they are stateless, we can easily add more servers horizontally as traffic grows.
+
+5. **Cache (Redis):** An in-memory data store that holds frequently accessed data (like popular user feeds or user sessions). This prevents the database from being hit for every single read request.
+
+6. **Primary Database:** The single source of truth for structured metadata (users, relationships, image URLs). Handles all write operations (INSERT/UPDATE/DELETE).
+
+7. **Read Replicas (x3):** Copies of the primary database that handle read-only queries. This offloads read traffic from the primary database.
+
+8. **Message Queue (Kafka):** A durable queue that holds background jobs. This decouples the slow image-processing tasks from the fast API response cycle.
+
+9. **Worker Nodes:** Background servers that pull jobs from the Message Queue. They process CPU-heavy tasks like resizing images and generating thumbnails.
+
+10. **Object Storage (S3):** Highly durable and scalable storage for large binary files (original photos and generated thumbnails). Replaces storing images in the database.
+
+---
+
+## 7. Step-by-Step Upload Flow (Handling Peak Load)
+
+To handle 57 uploads/second without degrading the user experience, the upload process must be asynchronous:
+
+1. **User Uploads:** The user selects a photo on the client and clicks "Upload". The client sends a POST request to the API with the image file.
+2. **App Server Validates:** The Load Balancer routes the request to an App Server. The App Server authenticates the user and validates the image format/size.
+3. **Upload to Object Storage:** The App Server uploads the raw image directly to Object Storage (S3).
+4. **Save Metadata:** The App Server writes the image metadata (User ID, URL, timestamp) to the Primary Database with a status of "processing".
+5. **Queue the Job:** The App Server pushes a message to the Message Queue (Kafka) containing the image ID and storage URL.
+6. **Immediate Response:** The App Server instantly returns a 202 Accepted response to the client. The user sees a success message immediately, rather than waiting for the image to process.
+7. **Background Processing:** A Worker Node picks up the message from the queue. It downloads the original image from S3, resizes it, generates a thumbnail, and uploads the thumbnail back to S3.
+8. **Update Status:** The Worker Node updates the database record status to "completed" and stores the new thumbnail URL.
+
+---
+
+## 8. Trade-off Analysis
+
+1. **Eventual Consistency vs. Strong Consistency:** By using Read Replicas, we introduce a slight delay where a user might upload a photo and not immediately see it on a different device (if the replica hasn't synced yet). We accept this "eventual consistency" trade-off because it prevents the primary database from being overwhelmed by read queries.
+
+2. **Cache Invalidation Complexity:** Using Redis drastically improves read speeds, but it introduces the "cache invalidation problem." If a user deletes a photo, we must ensure it's removed from the cache immediately. Otherwise, users might see deleted data. This adds complexity to the backend code.
+
+3. **Operational Overhead of Queues:** Introducing Kafka and Worker Nodes prevents our App Servers from blocking on image processing. However, this introduces significant operational overhead. We now have to monitor the queue length, handle failed jobs (Dead Letter Queues), and manage the worker infrastructure.
